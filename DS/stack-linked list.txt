@@ -1,0 +1,126 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+// Define a node structure for the linked list
+struct Node {
+    int data;
+    struct Node* next;
+};
+
+// Define a structure for the stack
+struct Stack {
+    struct Node* top;
+};
+
+// Function to create a new node
+struct Node* createNode(int data) {
+    struct Node* node = (struct Node*)malloc(sizeof(struct Node));
+    node->data = data;
+    node->next = NULL;
+    return node;
+}
+
+// Function to check if the stack is empty
+int isEmpty(struct Stack* stack) {
+    return stack->top == NULL;
+}
+
+// Function to push an element onto the stack
+void push(struct Stack* stack, int data) {
+    struct Node* newNode = createNode(data);
+    newNode->next = stack->top;
+    stack->top = newNode;
+    printf("%d pushed to stack\n", data);
+}
+
+// Function to pop an element from the stack
+int pop(struct Stack* stack) {
+    if (isEmpty(stack)) {
+        printf("Stack underflow\n");
+        return -1;
+}
+    struct Node* temp = stack->top;
+    int popped = temp->data;
+    stack->top = stack->top->next;
+    free(temp);
+    return popped;
+}
+
+// Function to display elements of the stack from top to bottom
+void displayStack(struct Stack* stack) {
+    if (isEmpty(stack)) {
+        printf("Stack is empty\n");
+        return;
+    }
+    struct Node* current = stack->top;
+    printf("Stack elements from top to bottom: ");
+    while (current != NULL) {
+        printf("%d ", current->data);
+        current = current->next;
+    }
+    printf("\n");
+}
+
+// Function to search for an element in the stack
+int search(struct Stack* stack, int key) {
+    struct Node* current = stack->top;
+    int position = 1;
+    while (current != NULL) {
+        if (current->data == key) {
+            return position;
+        }
+        current = current->next;
+        position++;
+    }
+    return -1; // Element not found
+}
+
+int main() {
+    struct Stack* stack = (struct Stack*)malloc(sizeof(struct Stack));
+    stack->top = NULL;
+
+    int choice, element, searchKey, position;
+
+    do {
+        printf("\nStack Operations\n");
+        printf("1. Push\n");
+        printf("2. Pop\n");
+        printf("3. Display\n");
+        printf("4. Search\n");
+        printf("5. Exit\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1:
+                printf("Enter element to push: ");
+                scanf("%d", &element);
+                push(stack, element);
+                break;
+            case 2:
+                printf("Popped element: %d\n", pop(stack));
+                break;
+            case 3:
+                displayStack(stack);
+                break;
+            case 4:
+                printf("Enter element to search: ");
+                scanf("%d", &searchKey);
+                position = search(stack, searchKey);
+                if (position != -1) {
+                    printf("Element found at position: %d\n", position);
+                } else {
+                    printf("Element not found in the stack\n");
+                }
+                break;
+            case 5:
+                printf("Exiting...\n");
+                break;
+            default:
+                printf("Invalid choice\n");
+        }
+    } while (choice != 5);
+
+    return 0;
+}
+
